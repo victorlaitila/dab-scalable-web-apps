@@ -20,14 +20,6 @@ app.get(
 );
 
 app.get(
-  "/api/languages/*/exercises",
-  cache({
-    cacheName: "lang-exercise-cache",
-    wait: true,
-  }),
-);
-
-app.get(
   "/api/languages/:id/exercises",
   cache({ cacheName: "lang-exercise-cache", wait: true }),
   async (c) => {
@@ -36,7 +28,7 @@ app.get(
       SELECT exercises.id, exercises.title, exercises.description
       FROM exercises 
       JOIN languages ON exercises.language_id = languages.id
-      WHERE languages.name = ${id}
+      WHERE languages.id = ${id}
     `;
     return c.json(exercises);
   }
