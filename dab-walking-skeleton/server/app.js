@@ -12,7 +12,8 @@ app.use("/*", cors());
 app.use("/*", logger());
 
 app.get("/", (c) => c.json({ message: "Hello world!" }));
-app.get("/todos", async (c) => {
+
+/*app.get("/todos", async (c) => {
   const todos = await sql`SELECT * FROM todos`;
   return c.json(todos);
 });
@@ -29,6 +30,6 @@ app.get("/redis-test", async (c) => {
 
   await redis.set("test", count);
   return c.json({ count });
-});
+});*/
 
 export default app;

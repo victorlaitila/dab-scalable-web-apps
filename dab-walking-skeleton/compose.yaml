@@ -10,6 +10,11 @@ services:
       - project.env
     depends_on:
       - database
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.50'
 
   client:
     build: client
