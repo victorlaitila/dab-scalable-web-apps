@@ -1,6 +1,7 @@
 import { Hono } from "@hono/hono";
 import { cors } from "@hono/hono/cors";
 import { logger } from "@hono/hono/logger";
+import { Redis } from "ioredis";
 import { cache } from "@hono/hono/cache";
 import postgres from "postgres";
 
@@ -9,6 +10,19 @@ const sql = postgres();
 
 app.use("/*", cors());
 app.use("/*", logger());
+
+let redis;
+
+if (Deno.env.get("REDIS_HOST")) {
+  redis = new Redis(
+    Number.parseInt(Deno.env.get("REDIS_PORT")),
+    Deno.env.get("REDIS_HOST"),
+  );
+} else {
+  redis = new Redis(6379, "redis");
+}
+
+const QUEUE_NAME = "submissions";
 
 app.get(
   "/api/languages",
@@ -33,5 +47,19 @@ app.get(
     return c.json(exercises);
   }
 );
+
+app.post("/api/exercises/:id/submissions", async (c) => {
+  const exerciseId = parseInt(c.req.param("id"));
+  const body = await c.req.json();
+  const sourceCode = body.source_code;
+  const submission = await sql`
+    INSERT INTO exercise_submissions (exercise_id, source_code, grading_status)
+    VALUES (${exerciseId}, ${sourceCode}, 'pending')
+    RETURNING id
+  `;
+  const submissionId = submission[0].id;
+  await redis.lpush(QUEUE_NAME, submissionId.toString());
+  return c.json({ id: submissionId });
+});
 
 export default app;

@@ -10,6 +10,17 @@ services:
       - project.env
     depends_on:
       - database
+
+  grader:
+    build: grader
+    restart: unless-stopped
+    volumes:
+      - ./grader:/app
+    env_file:
+      - project.env
+    depends_on:
+      - redis
+      - database
   
   database:
     container_name: postgresql_project_database
