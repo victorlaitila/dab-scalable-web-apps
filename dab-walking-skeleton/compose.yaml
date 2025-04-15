@@ -16,11 +16,11 @@ services:
       - "traefik.http.routers.server-router.rule=PathPrefix(`/`)"
       - "traefik.http.services.server-service.loadbalancer.server.port=8000"
 
-  server-consumer:
-    build: server-consumer
+  consumer-server:
+    build: consumer-server
     restart: unless-stopped
     volumes:
-      - ./server-consumer:/app
+      - ./consumer-server:/app
     env_file:
       - project.env
     depends_on:
