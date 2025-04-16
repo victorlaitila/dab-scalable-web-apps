@@ -15,10 +15,11 @@ app.use("/*", cors());
 app.use("/*", logger());
 
 app.get("/api", (c) => {
+  console.log("mroororooror")
   return c.text("Hello new path!");
 });
 
-app.post("/users", async (c) => {
+/*app.post("/users", async (c) => {
   const { name } = await c.req.json();
   await redisProducer.lpush(QUEUE_NAME, JSON.stringify({ name }));
   c.status(202);
@@ -32,7 +33,7 @@ app.post("/users", async (c) => {
   const user = await sql`INSERT INTO users (name) VALUES (${name})`;
   c.status(202);
   return c.body("Accepted");
-});
+});*/
 
 /*app.get("/todos", async (c) => {
   const todos = await sql`SELECT * FROM todos`;

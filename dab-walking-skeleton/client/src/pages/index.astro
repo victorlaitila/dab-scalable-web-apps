@@ -1,7 +1,7 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import FirstSvelteComponent from "../components/FirstSvelteComponent.svelte";
+const greet = Astro.props.greet || "component";
 ---
 
-<Layout>
-	<p>Hello, Astro!</p>
-</Layout>
+<p>Hello {greet}!</p>
+<FirstSvelteComponent client:idle />

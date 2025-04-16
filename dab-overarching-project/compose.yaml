@@ -11,6 +11,21 @@ services:
     depends_on:
       - database
 
+  client:
+    build: client
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: ./client
+        target: /app
+      - type: volume
+        source: client_node_modules
+        target: /app/node_modules
+    ports:
+      - 4321:4321
+    depends_on:
+      - server
+
   grader:
     build: grader
     restart: unless-stopped
@@ -48,3 +63,6 @@ services:
     command: redis-server /usr/local/etc/redis/redis.conf
     volumes:
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+
+volumes:
+  client_node_modules:
