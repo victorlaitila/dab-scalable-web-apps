@@ -8,12 +8,11 @@ services:
       - project.env
     depends_on:
       - database
-    deploy:
-      replicas: 1
+      - redis
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.server-router.entrypoints=web"
-      - "traefik.http.routers.server-router.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.server-router.rule=PathPrefix(`/api`)"
       - "traefik.http.services.server-service.loadbalancer.server.port=8000"
 
   consumer-server:

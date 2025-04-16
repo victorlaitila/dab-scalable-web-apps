@@ -14,6 +14,10 @@ const QUEUE_NAME = "users";
 app.use("/*", cors());
 app.use("/*", logger());
 
+app.get("/api", (c) => {
+  return c.text("Hello new path!");
+});
+
 app.post("/users", async (c) => {
   const { name } = await c.req.json();
   await redisProducer.lpush(QUEUE_NAME, JSON.stringify({ name }));
