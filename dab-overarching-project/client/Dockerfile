@@ -1,11 +1,16 @@
-FROM denoland/deno:alpine-2.0.2
+FROM denoland/deno:2.0.2
 
 WORKDIR /app
 
-COPY package.json .
+# Setup Deno config and dependencies
+COPY deno.json* ./
+COPY package.json package-lock.json* ./
 
-RUN DENO_FUTURE=1 deno install --allow-scripts
+# Optional: Just cache astro
+RUN deno cache npm:astro
 
+# Copy the rest of the files
 COPY . .
 
-CMD [ "task", "dev", "--host" ]
+# Start the client dev server
+CMD ["deno", "task", "dev", "--host"]
