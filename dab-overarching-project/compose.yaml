@@ -4,6 +4,10 @@ services:
     restart: unless-stopped
     depends_on:
       - server
+    #volumes:
+    #  - ./client:/app
+    #  - /app/node_modules
+    #command: deno task dev --host 
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.client-router.entrypoints=web"

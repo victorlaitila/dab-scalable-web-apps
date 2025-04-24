@@ -1,8 +1,7 @@
 ---
-import Submission from '../../components/Submission.svelte';
+import Exercise from '../../components/Exercise.svelte';
 export const prerender = false;
 const id = Astro.params.id;
 ---
 
-<p>Exercise {id}</p>
-<Submission client:load />
+<Exercise client:load id={id} />
