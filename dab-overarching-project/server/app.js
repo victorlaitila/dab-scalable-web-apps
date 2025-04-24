@@ -48,6 +48,35 @@ app.get(
   }
 );
 
+app.get("/api/exercises/:id", 
+  cache({ cacheName: "exercise-cache", wait: true }),
+  async (c) => {
+      const id = c.req.param("id");
+    const exercise = await sql`
+      SELECT exercises.id, exercises.title, exercises.description
+      FROM exercises
+      WHERE exercises.id = ${id}
+    `;
+    if (exercise.length === 0) {
+      return c.text("", 404);
+    }
+    return c.json(exercise[0]);
+  }
+);
+
+app.get("/api/submissions/:id/status", async (c) => {
+  const id = c.req.param("id");
+  const submission = await sql`
+    SELECT exercise_submissions.grading_status, exercise_submissions.grade
+    FROM exercise_submissions
+    WHERE exercise_submissions.id = ${id}
+  `;
+  if (submission.length === 0) {
+    return c.text("", 404);
+  }
+  return c.json(submission[0]);
+});
+
 app.post("/api/exercises/:id/submissions", async (c) => {
   const exerciseId = parseInt(c.req.param("id"));
   const body = await c.req.json();
