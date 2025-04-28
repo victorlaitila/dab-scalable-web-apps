@@ -3,13 +3,27 @@ import { cors } from "@hono/hono/cors";
 import { logger } from "@hono/hono/logger";
 import { Redis } from "ioredis";
 import { cache } from "@hono/hono/cache";
+import { auth } from "./auth.js";
 import postgres from "postgres";
 
 const app = new Hono();
 const sql = postgres();
 
+app.on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw));
 app.use("/*", cors());
 app.use("/*", logger());
+
+const requireAuth = async (c, next) => {
+  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  if (!session || !session.user?.name) {
+    return c.json({ message: "Unauthorized" }, 401);
+  }
+  c.set("user", session.user.name);
+  return next();
+};
+
+app.use("/api/exercises/:id/submissions", requireAuth);
+app.use("/api/submissions/:id/status", requireAuth);
 
 let redis;
 

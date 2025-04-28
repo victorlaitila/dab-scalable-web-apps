@@ -1,5 +1,7 @@
 <script>
   import { onMount } from 'svelte';
+  import { useUserState } from "../states/userState.svelte.js";
+  const userState = useUserState();
 
   const { id } = $props();
   let exercise = $state(null);
@@ -53,22 +55,25 @@
     }, pollingInterval);
   };
 </script>
-
 {#if exercise !== null}
   <h1>{exercise.title}</h1>
   <p>{exercise.description}</p>
 {/if}
 
-<div>
-	<textarea rows="4" cols="50" bind:value={inputString}></textarea>
-</div>
-<div>
-	<button onclick={handleSubmit}>Submit</button>	
-</div>
+{#if userState.email !== null}
+  <div>
+    <textarea rows="4" cols="50" bind:value={inputString}></textarea>
+  </div>
+  <div>
+    <button onclick={handleSubmit}>Submit</button>	
+  </div>
 
-{#if gradingStatus !== null}
-  <p>Grading status: {gradingStatus}</p>
-{/if}
-{#if grade !== null}
-  <p>Grade: {grade}</p>
+  {#if gradingStatus !== null}
+    <p>Grading status: {gradingStatus}</p>
+  {/if}
+  {#if grade !== null}
+    <p>Grade: {grade}</p>
+  {/if}
+{:else}
+  <p>Login or register to complete exercises.</p>
 {/if}

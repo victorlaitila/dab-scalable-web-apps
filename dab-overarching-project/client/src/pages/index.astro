@@ -1,9 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import LanguageList from "../components/LanguageList.svelte";
+import UserInfo from "../components/auth/UserInfo.svelte";
 ---
 
 <Layout>
+	<UserInfo client:load />
 	<p>Programming time!</p>
 	<a href="/exercises/1">Start</a>
 	<LanguageList client:load />
