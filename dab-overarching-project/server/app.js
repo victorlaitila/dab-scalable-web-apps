@@ -105,4 +105,9 @@ app.post("/api/exercises/:id/submissions", async (c) => {
   return c.json({ id: submissionId });
 });
 
+app.get("/api/lgtm-test", (c) => {
+  console.log("Hello log collection :)");
+  return c.json({ message: "Hello, world!" });
+});
+
 export default app;
