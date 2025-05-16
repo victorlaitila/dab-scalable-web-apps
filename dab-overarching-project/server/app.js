@@ -15,10 +15,11 @@ app.use("/*", logger());
 
 const requireAuth = async (c, next) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
-  if (!session || !session.user?.name) {
+  if (!session || !session.user?.name || !session.user?.id) {
     return c.json({ message: "Unauthorized" }, 401);
   }
   c.set("user", session.user.name);
+  c.set("userId", session.user.id);
   return next();
 };
 
@@ -65,7 +66,7 @@ app.get(
 app.get("/api/exercises/:id", 
   cache({ cacheName: "exercise-cache", wait: true }),
   async (c) => {
-      const id = c.req.param("id");
+    const id = c.req.param("id");
     const exercise = await sql`
       SELECT exercises.id, exercises.title, exercises.description
       FROM exercises
@@ -80,10 +81,11 @@ app.get("/api/exercises/:id",
 
 app.get("/api/submissions/:id/status", async (c) => {
   const id = c.req.param("id");
+  const userId = c.get("userId");
   const submission = await sql`
     SELECT exercise_submissions.grading_status, exercise_submissions.grade
     FROM exercise_submissions
-    WHERE exercise_submissions.id = ${id}
+    WHERE exercise_submissions.id = ${id} AND exercise_submissions.user_id = ${userId}
   `;
   if (submission.length === 0) {
     return c.text("", 404);
@@ -95,9 +97,10 @@ app.post("/api/exercises/:id/submissions", async (c) => {
   const exerciseId = parseInt(c.req.param("id"));
   const body = await c.req.json();
   const sourceCode = body.source_code;
+  const userId = c.get("userId");
   const submission = await sql`
-    INSERT INTO exercise_submissions (exercise_id, source_code, grading_status)
-    VALUES (${exerciseId}, ${sourceCode}, 'pending')
+    INSERT INTO exercise_submissions (exercise_id, source_code, grading_status, user_id)
+    VALUES (${exerciseId}, ${sourceCode}, 'pending', ${userId})
     RETURNING id
   `;
   const submissionId = submission[0].id;
