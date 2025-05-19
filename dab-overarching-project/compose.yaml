@@ -88,6 +88,17 @@ services:
       - "8000:8000"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  inference-api:
+    build: inference-api
+    restart: unless-stopped
+    volumes:
+      - ./inference-api:/app
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.inference-api-router.entrypoints=web"
+      - "traefik.http.routers.inference-api-router.rule=PathPrefix(`/inference-api`)"
+      - "traefik.http.services.inference-api-service.loadbalancer.server.port=8000"
   
   lgtm:
     image: grafana/otel-lgtm:0.8.6
