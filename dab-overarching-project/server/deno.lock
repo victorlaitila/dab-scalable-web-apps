@@ -4,7 +4,8 @@
     "jsr:@hono/hono@4.6.5": "4.6.5",
     "npm:better-auth@^1.2.7": "1.2.7",
     "npm:ioredis@5.4.2": "5.4.2",
-    "npm:kysely-postgres-js@2": "2.0.0_kysely@0.27.6_postgres@3.4.5"
+    "npm:kysely-postgres-js@2": "2.0.0_kysely@0.27.6_postgres@3.4.5",
+    "npm:postgres@3.4.5": "3.4.5"
   },
   "jsr": {
     "@hono/hono@4.6.5": {
@@ -512,7 +513,8 @@
       "jsr:@hono/hono@4.6.5",
       "npm:better-auth@^1.2.7",
       "npm:ioredis@5.4.2",
-      "npm:kysely-postgres-js@2"
+      "npm:kysely-postgres-js@2",
+      "npm:postgres@3.4.5"
     ]
   }
 }
